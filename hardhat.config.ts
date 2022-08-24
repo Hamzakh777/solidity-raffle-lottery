@@ -10,8 +10,30 @@ import "solidity-coverage"
 import "hardhat-deploy"
 import "solidity-coverage"
 
+const RINKEBY_RPC_URL = process.env.RINKEBY_RPC_URL || "";
+const PRIVATE_KEY = process.env.PRIVATE_KEY || "";
+
 const config: HardhatUserConfig = {
   solidity: "0.8.9",
+  defaultNetwork: "hardhat",
+  networks: {
+    hardhat: {
+      chainId: 31337,
+    },
+    rinkeby: {
+      url: RINKEBY_RPC_URL,
+      accounts: [PRIVATE_KEY],
+      chainId: 4,
+    }
+  },
+  namedAccounts: {
+    deployer: {
+      default: 0,
+    },
+    player: {
+      default: 1,
+    }
+  },
 }
 
 export default config
