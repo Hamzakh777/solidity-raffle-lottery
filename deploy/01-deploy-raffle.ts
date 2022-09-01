@@ -1,10 +1,13 @@
 import { HardhatRuntimeEnvironment } from "hardhat/types"
 import { Address, DeployFunction } from "hardhat-deploy/types"
-import { DEV_CHAINS, NETWORK_CONFIG, SUBSCRIPTION_ID } from "../hardhat.consts"
+import { DEV_CHAINS, NETWORK_CONFIG } from "../hardhat.consts"
 import { parseEther } from "ethers/lib/utils"
-import { network } from "hardhat"
+import { ethers, network } from "hardhat"
 import { VRFConsumerBaseV2, VRFCoordinatorV2Mock } from "../typechain-types"
 import { BigNumber } from "ethers"
+import { verify } from "../utils/verify"
+
+const VRF_SUB_FUND_AMOUNT = ethers.utils.parseEther("30")
 
 const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   // code here
@@ -36,30 +39,32 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     callbackGasLimit = 1000000
     // gas lane can be anything locally
     gasLane = "0x9fe0eebf5e446e3c998ec9bb19951541aee00bb90ea201ae456421a2ded86805"
+    // Fund the subscription
+    await VRFCoordinatorV2Mock.fundSubscription(subscriptionId, VRF_SUB_FUND_AMOUNT)
   } else {
     vrfCoordinatorAddress = NETWORK_CONFIG[chainId].vrfCoordinatorAddress
     callbackGasLimit = NETWORK_CONFIG[chainId].callbackGasLimit
     gasLane = NETWORK_CONFIG[chainId].gasLane
-    subscriptionId = BigNumber.from(SUBSCRIPTION_ID)
+    subscriptionId = BigNumber.from(NETWORK_CONFIG[chainId].subscriptionId)
   }
 
   log(`addres ${vrfCoordinatorAddress}`)
- 
+
   log("Deploying Raffle")
   const minEth = parseEther("0.0000000005")
-  await deploy("Raffle", {
+  const args = [vrfCoordinatorAddress, minEth, gasLane, subscriptionId, callbackGasLimit, 30000]
+  const raffle = await deploy("Raffle", {
     from: deployer,
-    // address vrfCoordinator,
-    // uint256 minEth,
-    // bytes32 gasLane,
-    // uint64 subscriptionId,
-    // uint32 callbackGasLimit,
-    // uint256 interval
-    args: [vrfCoordinatorAddress, minEth, gasLane, subscriptionId, callbackGasLimit, 30000],
+    args,
     log: DEV_CHAINS.includes(networkName),
     waitConfirmations: isDevEnv ? 1 : 6,
   })
+
+  if (!DEV_CHAINS.includes(network.name) && process.env.ETHERSCAN_API_KEY) {
+    await verify(raffle.address, args)
+  }
+
   log("Raffle Deployed")
-  // add this function to be a consumer of the vrfcoordinator if we are working locally
+  log("--------------------------------------------------")
 }
 export default func
