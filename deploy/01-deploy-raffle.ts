@@ -1,6 +1,6 @@
 import { HardhatRuntimeEnvironment } from "hardhat/types"
 import { Address, DeployFunction } from "hardhat-deploy/types"
-import { DEV_CHAINS, NETWORK_CONFIG } from "../hardhat.consts"
+import { DEV_CHAINS, MIN_ETH, NETWORK_CONFIG } from "../hardhat.consts"
 import { parseEther } from "ethers/lib/utils"
 import { ethers, network } from "hardhat"
 import { VRFConsumerBaseV2, VRFCoordinatorV2Mock } from "../typechain-types"
@@ -26,6 +26,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   let subscriptionId: BigNumber
   let gasLane: Address = ""
   let callbackGasLimit: number
+  let interval: number
   if (DEV_CHAINS.includes(networkName)) {
     const VRFCoordinatorV2Mock: VRFCoordinatorV2Mock = await ethers.getContract(
       "VRFCoordinatorV2Mock",
@@ -42,17 +43,18 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     // Fund the subscription
     await VRFCoordinatorV2Mock.fundSubscription(subscriptionId, VRF_SUB_FUND_AMOUNT)
   } else {
-    vrfCoordinatorAddress = NETWORK_CONFIG[chainId].vrfCoordinatorAddress
+    vrfCoordinatorAddress = NETWORK_CONFIG[chainId].vrfCoordinatorAddress || ''
     callbackGasLimit = NETWORK_CONFIG[chainId].callbackGasLimit
     gasLane = NETWORK_CONFIG[chainId].gasLane
     subscriptionId = BigNumber.from(NETWORK_CONFIG[chainId].subscriptionId)
   }
-
+  
   log(`addres ${vrfCoordinatorAddress}`)
-
+  
+  interval = NETWORK_CONFIG[chainId].interval;
   log("Deploying Raffle")
-  const minEth = parseEther("0.0000000005")
-  const args = [vrfCoordinatorAddress, minEth, gasLane, subscriptionId, callbackGasLimit, 30000]
+  const minEth = parseEther(MIN_ETH)
+  const args = [vrfCoordinatorAddress, minEth, gasLane, subscriptionId, callbackGasLimit, interval]
   const raffle = await deploy("Raffle", {
     from: deployer,
     args,
@@ -64,7 +66,16 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     await verify(raffle.address, args)
   }
 
+  if(DEV_CHAINS.includes(networkName)) {
+    const VRFCoordinatorV2Mock: VRFCoordinatorV2Mock = await ethers.getContract(
+      "VRFCoordinatorV2Mock",
+      deployer
+    )
+    await VRFCoordinatorV2Mock.addConsumer(subscriptionId.toNumber(), raffle.address)
+  }
+
   log("Raffle Deployed")
   log("--------------------------------------------------")
 }
 export default func
+func.tags = ["all", "mocks"];

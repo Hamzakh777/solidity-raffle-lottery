@@ -14,10 +14,10 @@ error Raffle__SendingEthFailed();
 error Raffle_NotOpen();
 error Raffle__UpKeepNotNeeded(uint256 balance, uint256 players, uint256 raffleState);
 
-/** 
+/**
  * @title Simple Raffle contract
  * @dev This implemented Chainlink VRF v2 and Chainlink Keepers
-*/
+ */
 contract Raffle is VRFConsumerBaseV2, KeeperCompatibleInterface {
   /* Type declarations */
   enum RaffleState {
@@ -168,19 +168,21 @@ contract Raffle is VRFConsumerBaseV2, KeeperCompatibleInterface {
     return s_raffleState;
   }
 
-  function getNumWords() public pure returns(uint256) {
+  function getNumWords() public pure returns (uint256) {
     return NUM_WORDS;
   }
 
-  function getNumberOfPlayers() public view returns(uint256) {
+  function getNumberOfPlayers() public view returns (uint256) {
     return s_players.length;
   }
 
-  function getLatestTimestamp() public view returns(uint256) {
+  function getLatestTimestamp() public view returns (uint256) {
     return s_lastTimeStamp;
   }
 
-  
+  function getInterval() public view returns (uint256) {
+    return i_interval;
+  }
 
   /* Modifiers */
   modifier onlyOwner() {
