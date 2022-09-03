@@ -119,7 +119,7 @@ import { Raffle, VRFCoordinatorV2Mock } from "../../typechain-types"
         })
       })
 
-      describe.only("performUpkeep", () => {
+      describe("performUpkeep", () => {
         it("Should only run if checkUpKeep is true", async () => {
           await raffle.enterRaffle({ value: entranceFee })
           await network.provider.send("evm_increaseTime", [interval.add(1).toNumber()])
@@ -141,7 +141,7 @@ import { Raffle, VRFCoordinatorV2Mock } from "../../typechain-types"
         })
       })
 
-      describe.only("fulfillRandomWords", () => {
+      describe("fulfillRandomWords", () => {
         beforeEach(async () => {
           // we want to make sure that:
           await raffle.enterRaffle({ value: entranceFee })
