@@ -41,6 +41,9 @@ const config: HardhatUserConfig = {
     currency: "USD",
     // coinmarketcap: COINMARKETCAP_API_KEY,
   },
+  mocha: {
+    timeout: 200000
+  }
 }
 
 export default config
