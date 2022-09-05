@@ -17,11 +17,11 @@ export const MIN_ETH: string = "0.0000000005"
 export const NETWORK_CONFIG: { [key: string]: NetworkConfig } = {
   "4": {
     name: "rinkeby",
-    vrfCoordinatorAddress: "0x271682DEB8C4E0901D1a1550aD2e64D568E69909",
-    gasLane: "0x9fe0eebf5e446e3c998ec9bb19951541aee00bb90ea201ae456421a2ded86805",
+    vrfCoordinatorAddress: "0x6168499c0cFfCaCD319c818142124B7A15E857ab",
+    gasLane: "0xd89b2bf150e3b9e13446986e571fb9cab24b13cea0a43ea20a6049a85cc807cc",
     callbackGasLimit: 50000,
-    subscriptionId: 0,
-    interval: 30000,
+    subscriptionId: 18428,
+    interval: 30,
   },
   "31337": {
     name: "localhost",

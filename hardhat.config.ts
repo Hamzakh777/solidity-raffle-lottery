@@ -12,6 +12,7 @@ import "solidity-coverage"
 
 const RINKEBY_RPC_URL = process.env.RINKEBY_RPC_URL || "";
 const PRIVATE_KEY = process.env.PRIVATE_KEY || "";
+const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY || "Your etherscan API key"
 
 const config: HardhatUserConfig = {
   solidity: "0.8.9",
@@ -43,7 +44,13 @@ const config: HardhatUserConfig = {
   },
   mocha: {
     timeout: 200000
-  }
+  },
+  etherscan: {
+    apiKey: {
+        rinkeby: ETHERSCAN_API_KEY,
+        kovan: ETHERSCAN_API_KEY,
+    },
+},
 }
 
 export default config
