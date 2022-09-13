@@ -6,7 +6,8 @@ interface HeaderProps {}
 const LOCAL_STORAGE_KEY_CONNECTED = "LOCAL_STORAGE_KEY_CONNECTED"
 
 export const Header = (props: HeaderProps) => {
-  const { enableWeb3, account, isWeb3Enabled, Moralis, deactivateWeb3 } = useMoralis()
+  const { enableWeb3, account, isWeb3Enabled, Moralis, deactivateWeb3, isWeb3EnableLoading } =
+    useMoralis()
 
   const connect = async () => {
     await enableWeb3()
@@ -16,7 +17,7 @@ export const Header = (props: HeaderProps) => {
     }
   }
 
-  const buttonNode = <button onClick={connect}>Connect</button>
+  const buttonNode = <button onClick={connect} disabled={isWeb3EnableLoading}>Connect</button>
 
   const connectedNode = useCallback(() => {
     if (!account) {
