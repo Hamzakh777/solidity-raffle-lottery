@@ -13,7 +13,7 @@ interface NetworkConfig {
 export const DEV_CHAINS: string[] = ["hardhat", "localhost"]
 export const BASE_FEE: BigNumber = ethers.utils.parseEther("0.25")
 export const GAS_PRICE_LINK: number = 1e9 // link per gas - calculated value based on the price of gas
-export const MIN_ETH: string = "0.0000000005"
+export const MIN_ETH: string = "0.5"
 export const NETWORK_CONFIG: { [key: string]: NetworkConfig } = {
   "4": {
     name: "rinkeby",
