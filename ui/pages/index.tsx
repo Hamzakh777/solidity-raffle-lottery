@@ -2,6 +2,7 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import { Header } from '../components/Header'
 import { HeaderV2 } from '../components/HeaderV2'
+import { LotteryEntrance } from '../components/LotteryEntrance'
 import styles from '../styles/Home.module.css'
 
 const Home: NextPage = () => {
@@ -13,8 +14,10 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Header />
+      {/* <Header /> */}
       <HeaderV2 />
+
+      <LotteryEntrance />
     </div>
   )
 }
