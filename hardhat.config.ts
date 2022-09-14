@@ -10,8 +10,8 @@ import "solidity-coverage"
 import "hardhat-deploy"
 import "solidity-coverage"
 
-const RINKEBY_RPC_URL = process.env.RINKEBY_RPC_URL || "";
-const PRIVATE_KEY = process.env.PRIVATE_KEY || "";
+const RINKEBY_RPC_URL = process.env.RINKEBY_RPC_URL || ""
+const PRIVATE_KEY = process.env.PRIVATE_KEY || ""
 const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY || "Your etherscan API key"
 
 const config: HardhatUserConfig = {
@@ -25,7 +25,10 @@ const config: HardhatUserConfig = {
       url: RINKEBY_RPC_URL,
       accounts: [PRIVATE_KEY],
       chainId: 4,
-    }
+    },
+    localhost: {
+      chainId: 31337,
+    },
   },
   namedAccounts: {
     deployer: {
@@ -33,7 +36,7 @@ const config: HardhatUserConfig = {
     },
     player: {
       default: 1,
-    }
+    },
   },
   gasReporter: {
     enabled: true,
@@ -43,14 +46,14 @@ const config: HardhatUserConfig = {
     // coinmarketcap: COINMARKETCAP_API_KEY,
   },
   mocha: {
-    timeout: 200000
+    timeout: 200000,
   },
   etherscan: {
     apiKey: {
-        rinkeby: ETHERSCAN_API_KEY,
-        kovan: ETHERSCAN_API_KEY,
+      rinkeby: ETHERSCAN_API_KEY,
+      kovan: ETHERSCAN_API_KEY,
     },
-},
+  },
 }
 
 export default config

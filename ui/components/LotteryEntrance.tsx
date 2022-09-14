@@ -8,6 +8,8 @@ interface LotteryEntranceProps {}
 
 export const LotteryEntrance = (props: LotteryEntranceProps) => {
   const [entranceFee, setEntranceFee] = useState<string>("0")
+  const [numPlayers, setNumPlayers] = useState<string>("0")
+  const [recentWinner, setRecentWinner] = useState<string>("0")
   const { chainId: chainIdHex, isWeb3Enabled } = useMoralis()
   const chainId = (chainIdHex && parseInt(chainIdHex)) || 0
   const raffleAddress = chainId in contractAddresses ? contractAddresses[chainId][0] : null
@@ -26,12 +28,34 @@ export const LotteryEntrance = (props: LotteryEntranceProps) => {
     abi,
     contractAddress: raffleAddress,
     functionName: "getEntranceFee",
+    params: {},
+  })
+
+  const { runContractFunction: getNumberOfPlayers } = useWeb3Contract({
+    abi,
+    contractAddress: raffleAddress,
+    functionName: "getNumberOfPlayers",
+    params: {},
+  })
+  const { runContractFunction: getRecentWinner } = useWeb3Contract({
+    abi,
+    contractAddress: raffleAddress,
+    functionName: "getRecentWinner",
+    params: {},
   })
 
   const updateUI = useCallback(async () => {
     const fee: any = await getEntranceFee()
+    const numPlayersFromCall: any = await getNumberOfPlayers()
+    const recentWinner: any = await getRecentWinner()
     if (fee) {
       setEntranceFee(fee.toString())
+    }
+    if (numPlayersFromCall) {
+      setNumPlayers(numPlayersFromCall.toString())
+    }
+    if (recentWinner) {
+      setRecentWinner(recentWinner)
     }
   }, [setEntranceFee, raffleAddress, getEntranceFee])
 
@@ -55,6 +79,7 @@ export const LotteryEntrance = (props: LotteryEntranceProps) => {
       position: "topR",
       icon: "bell" as any,
     })
+    updateUI()
   }
 
   useEffect(() => {
@@ -68,7 +93,9 @@ export const LotteryEntrance = (props: LotteryEntranceProps) => {
       {raffleAddress ? (
         <div>
           <button onClick={enterRaffleHandler}>Enter Raffle</button>
-          Entrance fee: {ethers.utils.formatUnits(entranceFee, "ether")} eth
+          <div>Entrance fee: {ethers.utils.formatUnits(entranceFee, "ether")} eth</div>
+          <div>Number of Players: {numPlayers}</div>
+          <div>Recent winner: {recentWinner}</div>
         </div>
       ) : (
         <div>No Raffle address detected</div>
