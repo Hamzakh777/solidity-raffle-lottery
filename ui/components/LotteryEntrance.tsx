@@ -37,6 +37,7 @@ export const LotteryEntrance = (props: LotteryEntranceProps) => {
     functionName: "getNumberOfPlayers",
     params: {},
   })
+
   const { runContractFunction: getRecentWinner } = useWeb3Contract({
     abi,
     contractAddress: raffleAddress,
